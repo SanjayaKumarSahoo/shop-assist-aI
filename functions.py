@@ -20,12 +20,12 @@ def initialize_conversation():
 
     You are an intelligent laptop gadget expert and your goal is to find the best laptop for a user.
     You need to ask relevant questions and understand the user profile by analysing the user's responses.
-    You final objective is to find the values for the different keys ('GPU intensity','Display quality','Portability','Multitasking','Processing speed','Budget') in the final string and be confident of the values.
+    You final objective is to find the values for the different keys ('GPU intensity','Display quality','Portability','Multitasking','Processing speed','Budget') in the final description and be confident of the values.
     The values for these keys determine the users profile
-    The string should look like I need a laptop with high GPU intensity, high Display quality, high Portability, high Multitasking, high Prcoessing speed and a budget of 150000.
+    The description should look like I need a laptop with high GPU intensity, high Display quality, high Portability, high Multitasking, high Processing speed and a budget of 150000.
     The values for all keys, except 'budget', should be 'low', 'medium', or 'high' based on the importance of the corresponding keys, as stated by user.
     The value for 'budget' should be a numerical value extracted from the user's response.
-    The values currently in the string provided are only representative values.
+    The values currently in the text provided are only representative values.
 
     {delimiter}Here are some instructions around the values for the different keys. If you do not follow this, you'll be heavily penalised.
     - The values for all keys, except 'Budget', should strictly be either 'low', 'medium', or 'high' based on the importance of the corresponding keys, as stated by user.
@@ -34,10 +34,10 @@ def initialize_conversation():
     - Do not randomly assign values to any of the keys. The values need to be inferred from the user's response.
     {delimiter}
 
-    To fill the values in the string, you need to have the following chain of thoughts:
+    To fill the values in the description, you need to have the following chain of thoughts:
     {delimiter} Thought 1: Ask a question to understand the user's profile and requirements. \n
     If their primary use for the laptop is unclear. Ask another question to comprehend their needs.
-    You are trying to fill the values of all the keys ('GPU intensity','Display quality','Portability','Multitasking','Processing speed','Budget') in the string by understanding the user requirements.
+    You are trying to fill the values of all the keys ('GPU intensity','Display quality','Portability','Multitasking','Processing speed','Budget') in the description by understanding the user requirements.
     Identify the keys for which you can fill the values confidently using the understanding. \n
     Remember the instructions around the values for the different keys.
     Answer "Yes" or "No" to indicate if you understand the requirements and have updated the values for the relevant keys. \n
@@ -49,10 +49,10 @@ def initialize_conversation():
     If yes, move to the next Thought. If no, ask question on the keys whose values you are unsure of. \n
     It is a good practice to ask question with a sound logic as opposed to directly citing the key you want to understand value for.{delimiter}
 
-    {delimiter}Thought 3: Check if you have correctly updated the values for the different keys in the python dictionary.
+    {delimiter}Thought 3: Check if you have correctly updated the values for the different keys in the description.
     If you are not confident about any of the values, ask clarifying questions. {delimiter}
 
-    Follow the above chain of thoughts and only output the final updated python dictionary. \n
+    Follow the above chain of thoughts and only output the final updated description. \n
 
 
     {delimiter} Here is a sample conversation between the user and assistant:
@@ -61,7 +61,7 @@ def initialize_conversation():
     User: "I primarily work with After Effects."
     Assistant: "Thank you for providing that information. Working with After Effects involves working with graphics, animations, and rendering, which will require high GPU. Do you work with high-resolution media files, such as 4K videos or RAW photos? Understanding your file sizes will help determine the storage capacity and processing power needed."
     User: "Yes, sometimes I work with 4K videos as well."
-    Assistant: "Thank you for the information. Processing 4K vidoes will require a good processor and high GPU. I think we have already determined earlier that you need a high GPU. To ensure I have a complete understanding of your needs, I have one more question: Are you frequently on the go and require a laptop that is lightweight and easy to carry, or do you primarily work from a stationary location?"
+    Assistant: "Thank you for the information. Processing 4K videos will require a good processor and high GPU. I think we have already determined earlier that you need a high GPU. To ensure I have a complete understanding of your needs, I have one more question: Are you frequently on the go and require a laptop that is lightweight and easy to carry, or do you primarily work from a stationary location?"
     User: "Yes, sometimes I travel but do not carry my laptop."
     Assistant:"Could you kindly let me know your budget for the laptop? This will help me find options that fit within your price range while meeting the specified requirements."
     User: "my max budget is 1.5 lakh inr"
@@ -93,7 +93,7 @@ def get_chat_completions(messages):
 def moderation_check(user_input):
     response = openai.moderations.create(input=user_input)
     moderation_output = response.results[0].flagged
-    if moderation_output == True:
+    if moderation_output:
         return "Flagged"
     else:
         return "Not Flagged"
@@ -113,7 +113,7 @@ def intent_confirmation_layer(response_assistant):
     delimiter = "####"
     prompt = f"""
     You are a senior evaluator who has an eye for detail.
-    You are provided an string input. You need to see that in the string the values for following 
+    You are provided an string input. You need to see that in the description the values for following 
     1. GPU intensity
     2. Display Quality
     3. Portability
@@ -146,10 +146,10 @@ This function gets user requirement string in the format provided in prompt.
 def get_user_requirement_string(response_assistant):
     delimiter = "####"
     prompt = f"""
-    You are given a string where the user requirements for the given keys different keys ('GPU intensity','Display quality','Portability','Multitasking','Processing speed','Budget') has
+    You are given a description where the user requirements for the given keys different keys ('GPU intensity','Display quality','Portability','Multitasking','Processing speed','Budget') has
     been captured inside that. The values for all keys, except 'budget', will be 'low', 'medium', or 'high' and the value of 'budget' will be a number.
     
-    You have to give out the string in the format where only the user intent is present and the output should match the given format
+    You have to give out the description in the format where only the user intent is present and the output should match the given format
     I need a laptop with high GPU intensity, medium display quality, high portability, high multi tasking, high processing speed and a budget of 100000.
     The values currently in the string provided are only representative values.
 
