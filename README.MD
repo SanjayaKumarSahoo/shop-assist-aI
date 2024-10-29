@@ -18,6 +18,12 @@ ShopAssist AI, and will
 - Understand their laptop requirements and
 - Recommend the most suitable laptops from a dataset based on their needs and preferences.
 
+## 3. Dataset
+
+1. Dataset are defined as below
+   ![data](images/dataset.png)
+2. The data file can be found [here](./laptop_data.csv)
+
 ## 3. Approach
 
 1. **Conversation and Information Gathering:** The chatbot will utilise language models to understand and generate
