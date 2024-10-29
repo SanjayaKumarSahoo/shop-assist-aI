@@ -1,7 +1,7 @@
-import openai
-import re
-import pandas as pd
 import json
+
+import openai
+import pandas as pd
 
 """
 The following function, initializes the conversation with the system message. Using prompt engineering and chain of thought reasoning,
@@ -220,7 +220,7 @@ def get_chat_completions_func_calling(input, include_budget):
   completion = openai.chat.completions.create(
     model = "gpt-3.5-turbo",
     messages = final_message,
-    functions = shopassist_custom_functions,
+    functions = shop_assist_custom_functions,
     function_call = 'auto'
   )
   function_parameters = json.loads(completion.choices[0].message.function_call.arguments)
