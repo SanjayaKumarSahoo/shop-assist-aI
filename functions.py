@@ -110,7 +110,6 @@ Specifically, this checks if the following properties for the user has been capt
    - Budget
 """
 def intent_confirmation_layer(response_assistant):
-    delimiter = "####"
     prompt = f"""
     You are a senior evaluator who has an eye for detail.
     You are provided an string input. You need to see that in the description the values for following 
@@ -123,9 +122,9 @@ def intent_confirmation_layer(response_assistant):
     have been captured successfully. Return Yes Or No
 
     The values for all keys, except 'budget', must be 'low', 'medium', or 'high' and the value of 'budget' must be a number. 
-
+    
     Please note that every key should have a value and budget should be a valid number
-
+    
     Remember return No if any one of the values is not captured
 
     """
@@ -152,6 +151,7 @@ def get_user_requirement_string(response_assistant):
     You have to give out the description in the format where only the user intent is present and the output should match the given format
     I need a laptop with high GPU intensity, medium display quality, high portability, high multi tasking, high processing speed and a budget of 100000.
     The values currently in the string provided are only representative values.
+    {delimiter}   
 
     Here is a sample input and output 
 
@@ -340,7 +340,7 @@ This function is responsible for extracting key features and criteria from lapto
 """
 def product_map_layer(laptop_description):
     delimiter = "#####"
-    lap_spec = "Laptop with (Type of the Graphics Processor) GPU intensity, (Display Type, Screen Resolution, Display Size) display quality, (Laptop Weight) portablity, (RAM Size) multi tasking, (CPU Type, Core, Clock Speed) processing speed"
+    lap_spec = "Laptop with (Type of the Graphics Processor) GPU intensity, (Display Type, Screen Resolution, Display Size) display quality, (Laptop Weight) portability, (RAM Size) multi tasking, (CPU Type, Core, Clock Speed) processing speed"
 
     values = {'low','medium','high'}
 
