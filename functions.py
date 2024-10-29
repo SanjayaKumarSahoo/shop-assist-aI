@@ -141,7 +141,6 @@ def intent_confirmation_layer(response_assistant):
     return confirmation.choices[0].message.content
 
 
-
 """
 This function gets user requirement string in the format provided in prompt.
 """
@@ -169,6 +168,7 @@ def get_user_requirement_string(response_assistant):
 
     return confirmation.choices[0].message.content
 
+
 """
 Develop a custom function to utilize OpenAI's function calling capabilities.
 """
@@ -193,7 +193,7 @@ shop_assist_custom_functions = [
                 },
                 'Multitasking': {
                     'type': 'string',
-                    'description': 'The multitasking abiliy of the user requested laptop. The values  are ''low'', ''medium'', or ''high'' based on the importance of the corresponding keys, as stated by user'
+                    'description': 'The multitasking ability of the user requested laptop. The values  are ''low'', ''medium'', or ''high'' based on the importance of the corresponding keys, as stated by user'
                 },
                 'Processing speed': {
                     'type': 'string',
@@ -207,6 +207,7 @@ shop_assist_custom_functions = [
         }
     }
 ]
+
 
 """
 Invokes the OpenAI API to retrieve the parameters necessary for function calling.
@@ -234,30 +235,32 @@ def get_chat_completions_func_calling(input, include_budget):
 """
 The extract_user_info function is designed to retrieve the laptop information for the user.
 """
-def extract_user_info(GPU_intensity, Display_quality, Portability, Multitasking, Processing_speed, Budget):
+def extract_user_info(gpu_intensity, display_quality, portability, multitasking, processing_speed, budget):
     """
-
     Parameters:
-    GPU_intensity (str): GPU intensity required by the user.
-    Display_quality (str): Display quality required by the user.
-    Portability (str): Portability required by the user.
-    Multitasking (str): Multitasking capability required by the user.
-    Processing_speed (str): Processing speed required by the user.
-    Budget (int): Budget of the user.
+    gpu_intensity (str): GPU intensity required by the user.
+    display_quality (str): Display quality required by the user.
+    portability (str): Portability required by the user.
+    multitasking (str): Multitasking capability required by the user.
+    processing_speed (str): Processing speed required by the user.
+    budget (int): Budget of the user.
 
     Returns:
     dict: A dictionary containing the extracted information.
     """
     return {
-        "GPU intensity": GPU_intensity,
-        "Display quality": Display_quality,
-        "Portability": Portability,
-        "Multitasking": Multitasking,
-        "Processing speed": Processing_speed,
-        "Budget": Budget
+        "GPU intensity": gpu_intensity,
+        "Display quality": display_quality,
+        "Portability": portability,
+        "Multitasking": multitasking,
+        "Processing speed": processing_speed,
+        "Budget": budget
     }
 
-# Compare and find laptops that match user requirements
+
+"""
+Identify and evaluate laptops that align with user specifications.
+"""
 def compare_laptops_with_user(user_requirements):
     laptop_df= pd.read_csv('laptop_data.csv')
     laptop_df['laptop_feature'] = laptop_df['Description'].apply(lambda x: product_map_layer(x))
@@ -290,12 +293,14 @@ def compare_laptops_with_user(user_requirements):
         filtered_laptops.loc[index, 'Score'] = score
 
     # Sort the laptops by score in descending order and return the top 5 products
-
     top_laptops = filtered_laptops.drop('laptop_feature', axis=1)
     top_laptops = top_laptops.sort_values('Score', ascending=False).head(3)
 
     return top_laptops.to_json(orient='records')
 
+"""
+This function validate the recommendations
+"""
 def recommendation_validation(laptop_recommendation):
     data = json.loads(laptop_recommendation)
     data1 = []
@@ -305,6 +310,13 @@ def recommendation_validation(laptop_recommendation):
 
     return data1
 
+
+"""
+This initializes the variable conversation with the system message. Using prompt engineering and chain of thought reasoning,
+the function will enable the chatbot to keep asking questions until the user requirements have been captured in a dictionary.
+It also includes Few Shot Prompting(sample conversation between the user and assistant) to align the model about user
+and assistant responses at each step.
+"""
 def initialize_conv_reco(products):
     system_message = f"""
     You are an intelligent laptop gadget expert and you are tasked with the objective to \
@@ -319,6 +331,14 @@ def initialize_conv_reco(products):
     conversation = [{"role": "system", "content": system_message }]
     return conversation
 
+
+"""
+This function is responsible for extracting key features and criteria from laptop descriptions.
+    - Use a prompt that assign it the role of a Laptop Specifications Classifier, whose objective is to extract key features and classify them based on laptop descriptions.
+    - Provide step-by-step instructions for extracting laptop features from description.
+    - Assign specific rules for each feature (e.g., GPU Intensity, Display Quality, Portability, Multitasking, Processing Speed) and associate them with the appropriate classification value (Low, Medium, or High).
+    - Includes Few Shot Prompting (sample conversation between the user and assistant) to demonstrate the expected result of the feature extraction and classification process.
+"""
 def product_map_layer(laptop_description):
     delimiter = "#####"
     lap_spec = "Laptop with (Type of the Graphics Processor) GPU intensity, (Display Type, Screen Resolution, Display Size) display quality, (Laptop Weight) portablity, (RAM Size) multi tasking, (CPU Type, Core, Clock Speed) processing speed"
