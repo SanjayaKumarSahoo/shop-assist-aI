@@ -1,5 +1,4 @@
 import openai
-import ast
 import re
 import pandas as pd
 import json
@@ -387,7 +386,7 @@ def product_map_layer(laptop_description):
     ### Strictly don't keep any other text in the values for the keys other than low or medium or high. Also return only the string and nothing else###
     """
     input = f"""Follow the above instructions step-by-step and output the string {lap_spec} for the following laptop {laptop_description}."""
-    #see that we are using the Completion endpoint and not the Chatcompletion endpoint
+    # see that we are using the Completion endpoint and not the Chat completion endpoint
     messages=[{"role": "system", "content":prompt },{"role": "user","content":input}]
 
     response = get_chat_completions(messages)

@@ -1,2 +1,3 @@
-openai
-pandas
+Flask == 3.0.3
+openai == 1.52.2
+pandas == 2.2.2
