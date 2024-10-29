@@ -6,9 +6,8 @@ import json
 
 """
 The following function, initializes the conversation with the system message. Using prompt engineering and chain of thought reasoning,
-the function will enable the chatbot to keep asking questions until the user requirements have been captured in a dictionary.
-It also includes Few Shot Prompting(sample conversation between the user and assistant) to align the model about user and
-assistant responses at each step.
+the function will enable the chatbot to keep asking questions until the user requirements.
+It also includes Few Shot Prompting(sample conversation between the user and assistant) to align the model about user and assistant responses at each step.
 """
 def initialize_conversation():
     '''
@@ -126,12 +125,15 @@ def intent_confirmation_layer(response_assistant):
 
     The values for all keys, except 'budget', must be 'low', 'medium', or 'high' and the value of 'budget' must be a number. 
 
-    Please not that every key should have a value and budget should be a valid number
+    Please note that every key should have a value and budget should be a valid number
 
     Remember return No if any one of the values is not captured
 
     """
-    messages=[{"role": "system", "content":prompt },{"role": "user", "content":f"""Here is the input: {response_assistant}""" }]
+    messages=[
+                {"role": "system", "content":prompt },
+                {"role": "user", "content":f"""Here is the input: {response_assistant}""" }
+             ]
     confirmation = openai.chat.completions.create(
                                     model="gpt-3.5-turbo",
                                     messages = messages)
@@ -141,7 +143,7 @@ def intent_confirmation_layer(response_assistant):
 
 
 """
-The intent confirmation layer evaluates the output of the chat completion from Open AI API
+This function gets user requirement string in the format provided in prompt.
 """
 def get_user_requirement_string(response_assistant):
     delimiter = "####"
@@ -150,7 +152,7 @@ def get_user_requirement_string(response_assistant):
     been captured inside that. The values for all keys, except 'budget', will be 'low', 'medium', or 'high' and the value of 'budget' will be a number.
     
     You have to give out the string in the format where only the user intent is present and the output should match the given format
-    I need a laptop with high GPU intensity, medium display quality, high portablity, high multi tasking, high processing speed and a budget of 100000.
+    I need a laptop with high GPU intensity, medium display quality, high portability, high multi tasking, high processing speed and a budget of 100000.
     The values currently in the string provided are only representative values.
 
     Here is a sample input and output 
@@ -158,15 +160,19 @@ def get_user_requirement_string(response_assistant):
     input : Great! Based on your requirements, I have a clear picture of your needs. You prioritize low GPU intensity, high display quality, low portability, high multitasking, high processing speed, and have a budget of 200000 INR. Thank you for providing all the necessary information.
     output : I need a laptop with low GPU intensity, high display quality, low portability, high multitasking, high processing speed and a budget of 200000.
     """
-    messages=[{"role": "system", "content":prompt },{"role": "user", "content":f"""Here is the input: {response_assistant}""" }]
+    messages=[  {"role": "system", "content":prompt },
+                {"role": "user", "content":f"""Here is the input: {response_assistant}""" }
+             ]
     confirmation = openai.chat.completions.create(
                                     model="gpt-3.5-turbo",
                                     messages = messages)
 
     return confirmation.choices[0].message.content
 
-# Create custom function for using Open AI function calling
-shopassist_custom_functions = [
+"""
+Develop a custom function to utilize OpenAI's function calling capabilities.
+"""
+shop_assist_custom_functions = [
     {
         'name': 'extract_user_info',
         'description': 'Get the user laptop information from the body of the input text',
@@ -202,12 +208,14 @@ shopassist_custom_functions = [
     }
 ]
 
-# Calls OpenAI API to return the function calling parameters
+"""
+Invokes the OpenAI API to retrieve the parameters necessary for function calling.
+"""
 def get_chat_completions_func_calling(input, include_budget):
   final_message = [
-    {"role": "system", "content": "You are a helpful assistant."},
-    {"role": "user", "content": input}
-    ]
+                    {"role": "system", "content": "You are a helpful assistant."},
+                    {"role": "user", "content": input}
+                ]
 
   completion = openai.chat.completions.create(
     model = "gpt-3.5-turbo",
@@ -223,7 +231,9 @@ def get_chat_completions_func_calling(input, include_budget):
   return extract_user_info(function_parameters['GPU intensity'], function_parameters['Display quality'], function_parameters['Portability'], function_parameters['Multitasking'],
                                        function_parameters['Processing speed'], budget)
 
-# The local function that we have written to extract the laptop information for user
+"""
+The extract_user_info function is designed to retrieve the laptop information for the user.
+"""
 def extract_user_info(GPU_intensity, Display_quality, Portability, Multitasking, Processing_speed, Budget):
     """
 
