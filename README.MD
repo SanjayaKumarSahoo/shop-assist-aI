@@ -87,33 +87,31 @@ The Flask application utilizes various functionalities:
 ### Prerequisites
 
 - Python 3.7+
-- OpenAI API Key(you have to add openai api key in the empty txt file (OpenAI_API_Key))
+- Please ensure that you add your OpenAI API key to the empty text file named "OpenAI_API_Key" in order to access the
+  OpenAI API.
 
 ### Getting Started
 
-To get started with ShopAssist AI, follow these steps:
+To begin utilizing ShopAssist AI, please proceed with the following instructions.
 
-1. **Clone the repository:**
+1. **Clone the repository**
+   ``` shell
+   $ git clone https://github.com/SanjayaKumarSahoo/shop-assist-ai
    ```
-   git clone https://github.com/dynamicanupam/ShopAssist-AI.git
-   cd ShopAssist-AI
-   ```
-2. **Lunch VS Code from Anaconda**
-    - In VS Code go to `File` > `Open Folder...` and select the `ShopassistAI` folder.
-    - Open a terminal in VS Code (``Ctrl+` `` or go to `Terminal` > `New Terminal`).
-2. **Install dependencies:**
+2. **Enable the virtual environment**
+    ```shell
+    $ source venv/bin/activate 
+    ```
 
-```   
-pip install -r requirements.txt
-```
+3. **Install dependencies**
+    ```shell   
+    $ pip install -r requirements.txt
+    ```
 
-3. **Initialize the conversation:**
-
-```
-python app.py
-```
-
-#### Note: This version includes steps to create and activate the Conda environment with Python 3.11.9 0r above, ensuring users set up python environment correctly before installing dependencies and running the application.
+4. **Initialize the chatbot**
+    ```
+    $ flask run
+    ```
 
 ## 7. Appendix - B
 
