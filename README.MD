@@ -54,9 +54,9 @@ description provided at the end of each entry. The chatbot will employ large lan
 
 ## 5. System Architecture
 
-ShopAssistAI follows a client-server architecture. Users interact with the web interface hosted on a server running the
-Flask application. The application interacts with OpenAI's API for conversation generation and moderation and retrieves
-and compares laptop data from an external database.
+ShopAssistAI operates on a client-server architecture. Users engage with a web interface that is hosted on a server
+utilizing the Flask application. This application communicates with OpenAI's API to facilitate conversation generation
+and moderation, while also accessing and comparing laptop data from an external database.
 
 ![stages](./images/stages.png)
 
@@ -66,13 +66,14 @@ and compares laptop data from an external database.
 
 The Flask application utilizes various functionalities:
 
-- **Routing:** Maps user requests to appropriate functions based on URLs.
-- **Conversation Management:** Handles conversation initiation, response generation through OpenAI's chat model, and
-  conversation history maintenance.
-- **User Input Processing:** Captures user input, performs moderation checks, and extracts user profiles from
-  conversation history (converting user input string to JSON using OpenAI Function calling).
-- **Recommendation Logic:** Compares user profiles with laptop data, validates recommendations, and generates
-  recommendation text.
+- **Routing:** Routing directs user requests to the relevant functions according to the specified URLs.
+- **Conversation Management:** Oversees the initiation of conversations, the generation of
+  responses utilizing OpenAI's chat model, and the maintenance of conversation history.
+- **User Input Processing:** User Input Processing involves capturing user input, conducting moderation checks, and
+  extracting user profiles from the conversation history, which includes converting the user input string into JSON
+  format through OpenAI Function calling.
+- **Recommendation Logic:** It assesses user profiles against laptop data, verifies the validity of recommendations,
+  and produces the corresponding recommendation text
 
   ### Major Functions
 - `initialize_conversation()`: Initializes the variable conversation with the system message.
