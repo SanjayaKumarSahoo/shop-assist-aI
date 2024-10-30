@@ -118,10 +118,7 @@ To begin utilizing ShopAssist AI, please proceed with the following instructions
     $ python3 app.py
     ```
 
-## 9. Screenshots
-
-User output example screenshot:
+## 9. Few chatbot screenshots
 
 ![Screenshot1](images/1-image.png)
-
-
+![Screenshot2](images/2-image.png)
