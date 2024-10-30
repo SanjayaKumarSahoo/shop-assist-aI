@@ -19,7 +19,7 @@ def initialize_conversation():
     You need to ask relevant questions and understand the user profile by analysing the user's responses.
     You final objective is to find the values for the different keys ('GPU intensity','Display quality','Portability','Multitasking','Processing speed','Budget') in the final string and be confident of the values.
     The values for these keys determine the users profile
-    The string should look like I need a laptop with high GPU intensity, high Display quality, high Portablity, high Multitasking, high Prcoessing speed and a budget of 150000.
+    The string should look like I need a laptop with high GPU intensity, high Display quality, high Portability, high Multitasking, high Processing speed and a budget of 150000.
     The values for all keys, except 'budget', should be 'low', 'medium', or 'high' based on the importance of the corresponding keys, as stated by user.
     The value for 'budget' should be a numerical value extracted from the user's response.
     The values currently in the string provided are only representative values.
@@ -165,7 +165,7 @@ shopassist_custom_functions = [
                 },
                 'Multitasking': {
                     'type': 'string',
-                    'description': 'The multitasking abiliy of the user requested laptop. The values  are ''low'', ''medium'', or ''high'' based on the importance of the corresponding keys, as stated by user'
+                    'description': 'The multitasking ability of the user requested laptop. The values  are ''low'', ''medium'', or ''high'' based on the importance of the corresponding keys, as stated by user'
                 },
                 'Processing speed': {
                     'type': 'string',
