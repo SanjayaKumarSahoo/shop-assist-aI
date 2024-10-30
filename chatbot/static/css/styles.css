@@ -22,7 +22,7 @@ body {
 
 /* Header Styles */
 .header {
-    background-color: #af4c4c;
+    background-color: #72797d;
     padding: 20px;
     text-align: center;
 }
@@ -97,7 +97,7 @@ body {
 }
 
 .endbutton {
-    background-color: #ff5252;
+    background-color: #72797d;
     color: #fff;
     border: none;
     padding: 10px 20px;
@@ -109,7 +109,7 @@ body {
 }
 
 .endbutton:hover {
-    background-color: #ff1744;
+    background-color: #ff420a;
 }
 
 .endbutton:focus, .submitbutton:focus, .inputtextbox:focus {
