@@ -1,6 +1,4 @@
-import openai
 from flask import Flask, redirect, url_for, render_template, request
-
 from functions import (
     initialize_conversation,
     initialize_conv_reco,
@@ -12,6 +10,11 @@ from functions import (
     get_user_requirement_string,
     get_chat_completions_func_calling
 )
+import openai
+import ast
+import re
+import pandas as pd
+import json
 
 openai.api_key=open("OpenAI_API_Key.txt",'r').read().strip()
 
@@ -61,7 +64,7 @@ def invite():
 
         confirmation = intent_confirmation_layer(response_assistant)
 
-        print('Intent confirmation is : ' + confirmation)
+        print('Intent confirmation is' + confirmation)
 
         moderation = moderation_check(confirmation)
         if moderation == 'Flagged':

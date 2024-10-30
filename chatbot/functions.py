@@ -11,7 +11,7 @@ def initialize_conversation():
     """
 
     delimiter = "####"
-    example_user_req = "I need a laptop with high GPU intensity, high Display quality, high Portablity, high Multitasking, high Prcoessing speed and a budget of 150000."
+    example_user_req = "I need a laptop with high GPU intensity, high Display quality, high Portability, high Multitasking, high Processing speed and a budget of 150000."
 
     system_message = f"""
 
@@ -58,10 +58,10 @@ def initialize_conversation():
     User: "I primarily work with After Effects."
     Assistant: "Thank you for providing that information. Working with After Effects involves working with graphics, animations, and rendering, which will require high GPU. Do you work with high-resolution media files, such as 4K videos or RAW photos? Understanding your file sizes will help determine the storage capacity and processing power needed."
     User: "Yes, sometimes I work with 4K videos as well."
-    Assistant: "Thank you for the information. Processing 4K vidoes will require a good processor and high GPU. I think we have already determined earlier that you need a high GPU. To ensure I have a complete understanding of your needs, I have one more question: Are you frequently on the go and require a laptop that is lightweight and easy to carry, or do you primarily work from a stationary location?"
+    Assistant: "Thank you for the information. Processing 4K videos will require a good processor and high GPU. I think we have already determined earlier that you need a high GPU. To ensure I have a complete understanding of your needs, I have one more question: Are you frequently on the go and require a laptop that is lightweight and easy to carry, or do you primarily work from a stationary location?"
     User: "Yes, sometimes I travel but do not carry my laptop."
     Assistant:"Could you kindly let me know your budget for the laptop? This will help me find options that fit within your price range while meeting the specified requirements."
-    User: "my max budget is 1.5lakh inr"
+    User: "my max budget is 1.5 lakh inr"
     Assistant: "{example_user_req}"
     {delimiter}
 
@@ -82,11 +82,11 @@ def get_chat_model_completions(messages):
     return response.choices[0].message.content
 
 
-# The following fucntion checks the user input for content inputed for moderation check
+# The following function checks the user input for content inputed for moderation check
 def moderation_check(user_input):
     response = openai.moderations.create(input=user_input)
     moderation_output = response.results[0].flagged
-    if moderation_output == True:
+    if moderation_output:
         return "Flagged"
     else:
         return "Not Flagged"
@@ -165,7 +165,7 @@ shopassist_custom_functions = [
                 },
                 'Multitasking': {
                     'type': 'string',
-                    'description': 'The multitasking ability of the user requested laptop. The values  are ''low'', ''medium'', or ''high'' based on the importance of the corresponding keys, as stated by user'
+                    'description': 'The multitasking abiliy of the user requested laptop. The values  are ''low'', ''medium'', or ''high'' based on the importance of the corresponding keys, as stated by user'
                 },
                 'Processing speed': {
                     'type': 'string',
@@ -204,7 +204,6 @@ def get_chat_completions_func_calling(input, include_budget):
 # The local function that we have written to extract the laptop information for user
 def extract_user_info(GPU_intensity, Display_quality, Portability, Multitasking, Processing_speed, Budget):
     """
-
     Parameters:
     GPU_intensity (str): GPU intensity required by the user.
     Display_quality (str): Display quality required by the user.
@@ -335,7 +334,7 @@ def product_map_layer(laptop_description):
     ### Strictly don't keep any other text in the values for the keys other than low or medium or high. Also return only the string and nothing else###
     """
     input = f"""Follow the above instructions step-by-step and output the string {lap_spec} for the following laptop {laptop_description}."""
-    #see that we are using the Completion endpoint and not the Chatcompletion endpoint
+    #see that we are using the Completion endpoint and not the Chat completion endpoint
     messages=[{"role": "system", "content":prompt },{"role": "user","content":input}]
 
     response = get_chat_model_completions(messages)
