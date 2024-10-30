@@ -36,19 +36,21 @@ ShopAssist AI, and will
 
 ## 4. System Functionalities
 
-- **User Interface:** ShopAssistAI provides a user-friendly web interface where users can interact with the
-  conversational AI assistant.
-- **Conversational AI:** The core of ShopAssistAI is the conversational AI powered by OpenAI's chat model. It guides the
-  user through the process by asking relevant questions and understanding their needs.
-- **User Input Moderation:** User input is moderated using OpenAI's moderation API to ensure a safe and secure
-  conversation.
-- **User Profile Extraction:** The AI assistant extracts key information from the conversation to build a user profile
-  that reflects their laptop preferences (budget, screen size, processing power, etc.) using OpenAI's function calling
-  mechanism to convert a user requirement string into a JSON object.
+- **User Interface:** The ShopAssistAI platform features an intuitive web interface that allows users to engage
+  seamlessly with the conversational AI assistant.
+- **Conversational AI:** At the heart of this system is the conversational AI, which leverages OpenAI's chat model to
+  guide users by asking appropriate questions and discerning their specific needs.
+- **User Input Moderation:**  To ensure a secure conversational environment, each inputs are regulated through OpenAI's
+  moderation API.
+- **User Profile Extraction:** The AI assistant collects vital information during the conversation to
+  construct a user profile that accurately represents their laptop preferences, including budget, display quality,
+  processing power, portability etc. utilizing OpenAI's function calling mechanism to convert user requirement strings
+  into JSON format.
 
-We have a dataset `laptop_data.csv` where each row describes the features of a single laptop and also has a small
-description at the end. The chatbot will leverage large language models to parse this `Description` column and provide
-recommendations.
+The dataset  [laptop_data.csv](./chatbot/laptop_data.csv) includes rows that detail the specifications of each laptop,
+with a concise
+description provided at the end of each entry. The chatbot will employ large language models to interpret the
+`Description` column and generate recommendations.
 
 ## 5. System Architecture
 
