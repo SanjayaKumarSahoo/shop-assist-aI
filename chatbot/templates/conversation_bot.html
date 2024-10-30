@@ -2,13 +2,13 @@
 <html>
 <head>
     <meta charset="UTF-8">
-    <title>Shopping Assistant</title>
+    <title>ShopAssist AI 2.0</title>
     <link rel="stylesheet" type="text/css" href="/static/css/styles.css">
 </head>
 <body>
     <div class="outercontainer">
         <div class="header">
-            <h1 class="title">Shopping Assistant</h1>
+            <h1 class="title">ShopAssist AI 2.0</h1>
         </div>
         <div class="conversationcontainer" id="chatcontainer">
             {% for entry in name_xyz %}
@@ -23,7 +23,7 @@
         </div>
         <div class="inputcontainer">
             <form action="/conversation" method="POST" class="inputform">
-                <input type="text" name="user_input_message" class="inputtextbox" placeholder="Type your message here...">
+                <input type="text" name="user_input_message" class="inputtextbox" placeholder="Type your message">
                 <button type="submit" class="submitbutton"></button>
             </form>
             <form action="/end_conversation" method="POST" class="endform">

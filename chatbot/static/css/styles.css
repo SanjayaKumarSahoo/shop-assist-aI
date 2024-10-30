@@ -51,13 +51,13 @@ body {
 }
 
 .user {
-    background-color: #007BFF;
+    background-color: #4a5568;
     color: #fff;
     float: right;
 }
 
 .bot {
-    background-color: #6d776e;
+    background-color: #4A98D8;
     color: #fff;
     float: left;
 }
