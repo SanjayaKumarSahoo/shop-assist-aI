@@ -22,7 +22,7 @@ ShopAssist AI, and will
 
 1. Dataset are defined as below
    ![data](images/dataset.png)
-2. The data file can be found [here](./laptop_data.csv)
+2. The data file can be found [here](chatbot/laptop_data.csv)
 
 ## 3. Approach
 

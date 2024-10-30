@@ -1,31 +1,28 @@
+import openai
+import ast
+import re
+import pandas as pd
 import json
 
-import openai
-import pandas as pd
-
-"""
-The following function, initializes the conversation with the system message. Using prompt engineering and chain of thought reasoning,
-the function will enable the chatbot to keep asking questions until the user requirements.
-It also includes Few Shot Prompting(sample conversation between the user and assistant) to align the model about user and assistant responses at each step.
-"""
+# This function initiates create the system and role conversation with Open AI model
 def initialize_conversation():
     '''
     Returns a list [{"role": "system", "content": system_message}]
     '''
 
     delimiter = "####"
-    example_user_req = "I need a laptop with high GPU intensity, high Display quality, high Portability, high Multitasking, high Processing speed and a budget of 150000."
+    example_user_req = "I need a laptop with high GPU intensity, high Display quality, high Portablity, high Multitasking, high Prcoessing speed and a budget of 150000."
 
     system_message = f"""
 
     You are an intelligent laptop gadget expert and your goal is to find the best laptop for a user.
     You need to ask relevant questions and understand the user profile by analysing the user's responses.
-    You final objective is to find the values for the different keys ('GPU intensity','Display quality','Portability','Multitasking','Processing speed','Budget') in the final description and be confident of the values.
+    You final objective is to find the values for the different keys ('GPU intensity','Display quality','Portability','Multitasking','Processing speed','Budget') in the final string and be confident of the values.
     The values for these keys determine the users profile
-    The description should look like I need a laptop with high GPU intensity, high Display quality, high Portability, high Multitasking, high Processing speed and a budget of 150000.
+    The string should look like I need a laptop with high GPU intensity, high Display quality, high Portablity, high Multitasking, high Prcoessing speed and a budget of 150000.
     The values for all keys, except 'budget', should be 'low', 'medium', or 'high' based on the importance of the corresponding keys, as stated by user.
     The value for 'budget' should be a numerical value extracted from the user's response.
-    The values currently in the text provided are only representative values.
+    The values currently in the string provided are only representative values.
 
     {delimiter}Here are some instructions around the values for the different keys. If you do not follow this, you'll be heavily penalised.
     - The values for all keys, except 'Budget', should strictly be either 'low', 'medium', or 'high' based on the importance of the corresponding keys, as stated by user.
@@ -34,10 +31,10 @@ def initialize_conversation():
     - Do not randomly assign values to any of the keys. The values need to be inferred from the user's response.
     {delimiter}
 
-    To fill the values in the description, you need to have the following chain of thoughts:
+    To fill the values in the string, you need to have the following chain of thoughts:
     {delimiter} Thought 1: Ask a question to understand the user's profile and requirements. \n
     If their primary use for the laptop is unclear. Ask another question to comprehend their needs.
-    You are trying to fill the values of all the keys ('GPU intensity','Display quality','Portability','Multitasking','Processing speed','Budget') in the description by understanding the user requirements.
+    You are trying to fill the values of all the keys ('GPU intensity','Display quality','Portability','Multitasking','Processing speed','Budget') in the string by understanding the user requirements.
     Identify the keys for which you can fill the values confidently using the understanding. \n
     Remember the instructions around the values for the different keys.
     Answer "Yes" or "No" to indicate if you understand the requirements and have updated the values for the relevant keys. \n
@@ -49,10 +46,10 @@ def initialize_conversation():
     If yes, move to the next Thought. If no, ask question on the keys whose values you are unsure of. \n
     It is a good practice to ask question with a sound logic as opposed to directly citing the key you want to understand value for.{delimiter}
 
-    {delimiter}Thought 3: Check if you have correctly updated the values for the different keys in the description.
+    {delimiter}Thought 3: Check if you have correctly updated the values for the different keys in the python dictionary.
     If you are not confident about any of the values, ask clarifying questions. {delimiter}
 
-    Follow the above chain of thoughts and only output the final updated description. \n
+    Follow the above chain of thoughts and only output the final updated python dictionary. \n
 
 
     {delimiter} Here is a sample conversation between the user and assistant:
@@ -61,10 +58,10 @@ def initialize_conversation():
     User: "I primarily work with After Effects."
     Assistant: "Thank you for providing that information. Working with After Effects involves working with graphics, animations, and rendering, which will require high GPU. Do you work with high-resolution media files, such as 4K videos or RAW photos? Understanding your file sizes will help determine the storage capacity and processing power needed."
     User: "Yes, sometimes I work with 4K videos as well."
-    Assistant: "Thank you for the information. Processing 4K videos will require a good processor and high GPU. I think we have already determined earlier that you need a high GPU. To ensure I have a complete understanding of your needs, I have one more question: Are you frequently on the go and require a laptop that is lightweight and easy to carry, or do you primarily work from a stationary location?"
+    Assistant: "Thank you for the information. Processing 4K vidoes will require a good processor and high GPU. I think we have already determined earlier that you need a high GPU. To ensure I have a complete understanding of your needs, I have one more question: Are you frequently on the go and require a laptop that is lightweight and easy to carry, or do you primarily work from a stationary location?"
     User: "Yes, sometimes I travel but do not carry my laptop."
     Assistant:"Could you kindly let me know your budget for the laptop? This will help me find options that fit within your price range while meeting the specified requirements."
-    User: "my max budget is 1.5 lakh inr"
+    User: "my max budget is 1.5lakh inr"
     Assistant: "{example_user_req}"
     {delimiter}
 
@@ -74,10 +71,8 @@ def initialize_conversation():
     # conversation = system_message
     return conversation
 
-"""
-This function perform LLM call using the Chat Completions API to get the LLM response.
-"""
-def get_chat_completions(messages):
+# The function encapsulates the chat completions API call to Open AI
+def get_chat_model_completions(messages):
     response = openai.chat.completions.create(
         model="gpt-3.5-turbo",
         messages=messages,
@@ -87,32 +82,21 @@ def get_chat_completions(messages):
     return response.choices[0].message.content
 
 
-"""
- This checks if the user's or the assistant's message is inappropriate.
-"""
+# The following fucntion checks the user input for content inputed for moderation check
 def moderation_check(user_input):
     response = openai.moderations.create(input=user_input)
     moderation_output = response.results[0].flagged
-    if moderation_output:
+    if moderation_output == True:
         return "Flagged"
     else:
         return "Not Flagged"
 
-
-"""
-This function takes the assistant's response and evaluates if the chatbot has captured the user's profile clearly.
-Specifically, this checks if the following properties for the user has been captured or not
-   - GPU intensity
-   - Display quality
-   - Portability
-   - Multitasking
-   - Processing speed
-   - Budget
-"""
+# The intent confirmation layer evaluates the output of the chat completion from Open AI API
 def intent_confirmation_layer(response_assistant):
+    delimiter = "####"
     prompt = f"""
     You are a senior evaluator who has an eye for detail.
-    You are provided an string input. You need to see that in the description the values for following 
+    You are provided an string input. You need to see that in the string the values for following 
     1. GPU intensity
     2. Display Quality
     3. Portability
@@ -122,16 +106,13 @@ def intent_confirmation_layer(response_assistant):
     have been captured successfully. Return Yes Or No
 
     The values for all keys, except 'budget', must be 'low', 'medium', or 'high' and the value of 'budget' must be a number. 
-    
-    Please note that every key should have a value and budget should be a valid number
-    
+
+    Please not that every key should have a value and budget should be a valid number
+
     Remember return No if any one of the values is not captured
 
     """
-    messages=[
-                {"role": "system", "content":prompt },
-                {"role": "user", "content":f"""Here is the input: {response_assistant}""" }
-             ]
+    messages=[{"role": "system", "content":prompt },{"role": "user", "content":f"""Here is the input: {response_assistant}""" }]
     confirmation = openai.chat.completions.create(
                                     model="gpt-3.5-turbo",
                                     messages = messages)
@@ -139,39 +120,31 @@ def intent_confirmation_layer(response_assistant):
     return confirmation.choices[0].message.content
 
 
-"""
-This function gets user requirement string in the format provided in prompt.
-"""
+# The intent confirmation layer evaluates the output of the chat completion from Open AI API
 def get_user_requirement_string(response_assistant):
     delimiter = "####"
     prompt = f"""
-    You are given a description where the user requirements for the given keys different keys ('GPU intensity','Display quality','Portability','Multitasking','Processing speed','Budget') has
+    You are given a string where the user requirements for the given keys different keys ('GPU intensity','Display quality','Portability','Multitasking','Processing speed','Budget') has
     been captured inside that. The values for all keys, except 'budget', will be 'low', 'medium', or 'high' and the value of 'budget' will be a number.
     
-    You have to give out the description in the format where only the user intent is present and the output should match the given format
-    I need a laptop with high GPU intensity, medium display quality, high portability, high multi tasking, high processing speed and a budget of 100000.
+    You have to give out the string in the format where only the user intent is present and the output should match the given format
+    I need a laptop with high GPU intensity, medium display quality, high portablity, high multi tasking, high processing speed and a budget of 100000.
     The values currently in the string provided are only representative values.
-    {delimiter}   
 
     Here is a sample input and output 
 
     input : Great! Based on your requirements, I have a clear picture of your needs. You prioritize low GPU intensity, high display quality, low portability, high multitasking, high processing speed, and have a budget of 200000 INR. Thank you for providing all the necessary information.
-    output : I need a laptop with low GPU intensity, high display quality, low portability, high multitasking, high processing speed and a budget of 200000.
+    output : I need a laptop with low GPU intensity, high display quality, low portablity, high multitasking, high processing speed and a budget of 200000.
     """
-    messages=[  {"role": "system", "content":prompt },
-                {"role": "user", "content":f"""Here is the input: {response_assistant}""" }
-             ]
+    messages=[{"role": "system", "content":prompt },{"role": "user", "content":f"""Here is the input: {response_assistant}""" }]
     confirmation = openai.chat.completions.create(
                                     model="gpt-3.5-turbo",
                                     messages = messages)
 
     return confirmation.choices[0].message.content
 
-
-"""
-Develop a custom function to utilize OpenAI's function calling capabilities.
-"""
-shop_assist_custom_functions = [
+# Create custom function for using Open AI function calling
+shopassist_custom_functions = [
     {
         'name': 'extract_user_info',
         'description': 'Get the user laptop information from the body of the input text',
@@ -192,7 +165,7 @@ shop_assist_custom_functions = [
                 },
                 'Multitasking': {
                     'type': 'string',
-                    'description': 'The multitasking ability of the user requested laptop. The values  are ''low'', ''medium'', or ''high'' based on the importance of the corresponding keys, as stated by user'
+                    'description': 'The multitasking abiliy of the user requested laptop. The values  are ''low'', ''medium'', or ''high'' based on the importance of the corresponding keys, as stated by user'
                 },
                 'Processing speed': {
                     'type': 'string',
@@ -207,20 +180,17 @@ shop_assist_custom_functions = [
     }
 ]
 
-
-"""
-Invokes the OpenAI API to retrieve the parameters necessary for function calling.
-"""
+# Calls OpenAI API to return the function calling parameters
 def get_chat_completions_func_calling(input, include_budget):
   final_message = [
-                    {"role": "system", "content": "You are a helpful assistant."},
-                    {"role": "user", "content": input}
-                ]
+    {"role": "system", "content": "You are a helpful assistant."},
+    {"role": "user", "content": input}
+    ]
 
   completion = openai.chat.completions.create(
     model = "gpt-3.5-turbo",
     messages = final_message,
-    functions = shop_assist_custom_functions,
+    functions = shopassist_custom_functions,
     function_call = 'auto'
   )
   function_parameters = json.loads(completion.choices[0].message.function_call.arguments)
@@ -231,35 +201,31 @@ def get_chat_completions_func_calling(input, include_budget):
   return extract_user_info(function_parameters['GPU intensity'], function_parameters['Display quality'], function_parameters['Portability'], function_parameters['Multitasking'],
                                        function_parameters['Processing speed'], budget)
 
-"""
-The extract_user_info function is designed to retrieve the laptop information for the user.
-"""
-def extract_user_info(gpu_intensity, display_quality, portability, multitasking, processing_speed, budget):
+# The local function that we have written to extract the laptop information for user
+def extract_user_info(GPU_intensity, Display_quality, Portability, Multitasking, Processing_speed, Budget):
     """
+
     Parameters:
-    gpu_intensity (str): GPU intensity required by the user.
-    display_quality (str): Display quality required by the user.
-    portability (str): Portability required by the user.
-    multitasking (str): Multitasking capability required by the user.
-    processing_speed (str): Processing speed required by the user.
-    budget (int): Budget of the user.
+    GPU_intensity (str): GPU intensity required by the user.
+    Display_quality (str): Display quality required by the user.
+    Portability (str): Portability required by the user.
+    Multitasking (str): Multitasking capability required by the user.
+    Processing_speed (str): Processing speed required by the user.
+    Budget (int): Budget of the user.
 
     Returns:
     dict: A dictionary containing the extracted information.
     """
     return {
-        "GPU intensity": gpu_intensity,
-        "Display quality": display_quality,
-        "Portability": portability,
-        "Multitasking": multitasking,
-        "Processing speed": processing_speed,
-        "Budget": budget
+        "GPU intensity": GPU_intensity,
+        "Display quality": Display_quality,
+        "Portability": Portability,
+        "Multitasking": Multitasking,
+        "Processing speed": Processing_speed,
+        "Budget": Budget
     }
 
-
-"""
-Identify and evaluate laptops that align with user specifications.
-"""
+# Compare and find laptops that match user requirements
 def compare_laptops_with_user(user_requirements):
     laptop_df= pd.read_csv('laptop_data.csv')
     laptop_df['laptop_feature'] = laptop_df['Description'].apply(lambda x: product_map_layer(x))
@@ -292,14 +258,12 @@ def compare_laptops_with_user(user_requirements):
         filtered_laptops.loc[index, 'Score'] = score
 
     # Sort the laptops by score in descending order and return the top 5 products
+
     top_laptops = filtered_laptops.drop('laptop_feature', axis=1)
     top_laptops = top_laptops.sort_values('Score', ascending=False).head(3)
 
     return top_laptops.to_json(orient='records')
 
-"""
-This function validate the recommendations
-"""
 def recommendation_validation(laptop_recommendation):
     data = json.loads(laptop_recommendation)
     data1 = []
@@ -309,13 +273,6 @@ def recommendation_validation(laptop_recommendation):
 
     return data1
 
-
-"""
-This initializes the variable conversation with the system message. Using prompt engineering and chain of thought reasoning,
-the function will enable the chatbot to keep asking questions until the user requirements have been captured in a dictionary.
-It also includes Few Shot Prompting(sample conversation between the user and assistant) to align the model about user
-and assistant responses at each step.
-"""
 def initialize_conv_reco(products):
     system_message = f"""
     You are an intelligent laptop gadget expert and you are tasked with the objective to \
@@ -330,17 +287,9 @@ def initialize_conv_reco(products):
     conversation = [{"role": "system", "content": system_message }]
     return conversation
 
-
-"""
-This function is responsible for extracting key features and criteria from laptop descriptions.
-    - Use a prompt that assign it the role of a Laptop Specifications Classifier, whose objective is to extract key features and classify them based on laptop descriptions.
-    - Provide step-by-step instructions for extracting laptop features from description.
-    - Assign specific rules for each feature (e.g., GPU Intensity, Display Quality, Portability, Multitasking, Processing Speed) and associate them with the appropriate classification value (Low, Medium, or High).
-    - Includes Few Shot Prompting (sample conversation between the user and assistant) to demonstrate the expected result of the feature extraction and classification process.
-"""
 def product_map_layer(laptop_description):
     delimiter = "#####"
-    lap_spec = "Laptop with (Type of the Graphics Processor) GPU intensity, (Display Type, Screen Resolution, Display Size) display quality, (Laptop Weight) portability, (RAM Size) multi tasking, (CPU Type, Core, Clock Speed) processing speed"
+    lap_spec = "Laptop with (Type of the Graphics Processor) GPU intensity, (Display Type, Screen Resolution, Display Size) display quality, (Laptop Weight) portablity, (RAM Size) multi tasking, (CPU Type, Core, Clock Speed) processing speed"
 
     values = {'low','medium','high'}
 
@@ -386,8 +335,8 @@ def product_map_layer(laptop_description):
     ### Strictly don't keep any other text in the values for the keys other than low or medium or high. Also return only the string and nothing else###
     """
     input = f"""Follow the above instructions step-by-step and output the string {lap_spec} for the following laptop {laptop_description}."""
-    # see that we are using the Completion endpoint and not the Chat completion endpoint
+    #see that we are using the Completion endpoint and not the Chatcompletion endpoint
     messages=[{"role": "system", "content":prompt },{"role": "user","content":input}]
 
-    response = get_chat_completions(messages)
+    response = get_chat_model_completions(messages)
     return response
