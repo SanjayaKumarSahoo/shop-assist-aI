@@ -111,6 +111,8 @@ To begin utilizing ShopAssist AI, please proceed with the following instructions
 4. **Initialize the chatbot**
     ```
     $ flask run
+     # or
+    $ python3 app.py
     ```
 
 ## 7. Appendix - B
