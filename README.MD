@@ -56,9 +56,9 @@ ShopAssistAI follows a client-server architecture. Users interact with the web i
 Flask application. The application interacts with OpenAI's API for conversation generation and moderation and retrieves
 and compares laptop data from an external database.
 
-![stages](https://github.com/user-attachments/assets/e6e690f5-8bb2-4cf6-9b13-08b7eaee14f9)
+![stages](./images/stages.png)
 
-![systemdesign](https://github.com/user-attachments/assets/001e9fff-763e-4a54-9cc0-6633021f7ea0)
+![systemdesign](./images/system_design.png)
 
 ## 6. Implementation Details
 
