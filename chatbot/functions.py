@@ -1,14 +1,14 @@
-import openai
-import ast
-import re
-import pandas as pd
 import json
+
+import openai
+import pandas as pd
+
 
 # This function initiates create the system and role conversation with Open AI model
 def initialize_conversation():
-    '''
+    """
     Returns a list [{"role": "system", "content": system_message}]
-    '''
+    """
 
     delimiter = "####"
     example_user_req = "I need a laptop with high GPU intensity, high Display quality, high Portablity, high Multitasking, high Prcoessing speed and a budget of 150000."
