@@ -1,5 +1,5 @@
 from flask import Flask, redirect, url_for, render_template, request
-from functions import (
+from llm_functions import (
     initialize_conversation,
     initialize_conv_reco,
     get_chat_model_completions,
@@ -64,7 +64,7 @@ def invite():
 
         confirmation = intent_confirmation_layer(response_assistant)
 
-        print('Intent confirmation is' + confirmation)
+        print('Intent confirmation is : ' + confirmation)
 
         moderation = moderation_check(confirmation)
         if moderation == 'Flagged':
