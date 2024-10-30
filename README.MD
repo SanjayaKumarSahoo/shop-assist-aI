@@ -24,7 +24,7 @@ ShopAssist AI, and will
    ![data](images/dataset.png)
 2. The data file can be found [here](chatbot/laptop_data.csv)
 
-## 3. Approach
+## 4. Approach
 
 1. **Conversation and Information Gathering:** The chatbot will utilise language models to understand and generate
    natural responses. Through a conversational flow, it will ask relevant questions to gather information about the
@@ -34,7 +34,7 @@ ShopAssist AI, and will
 3. **Personalized Recommendation:** Leveraging this extracted information, the chatbot engages in further dialogue with
    the user, efficiently addressing their queries and aiding them in finding the perfect laptop solution.
 
-## 4. System Functionalities
+## 5. System Functionalities
 
 - **User Interface:** The ShopAssistAI platform features an intuitive web interface that allows users to engage
   seamlessly with the conversational AI assistant.
@@ -52,7 +52,7 @@ with a concise
 description provided at the end of each entry. The chatbot will employ large language models to interpret the
 `Description` column and generate recommendations.
 
-## 5. System Architecture
+## 6. System Architecture
 
 ShopAssistAI operates on a client-server architecture. Users engage with a web interface that is hosted on a server
 utilizing the Flask application. This application communicates with OpenAI's API to facilitate conversation generation
@@ -62,7 +62,7 @@ and moderation, while also accessing and comparing laptop data from an external 
 
 ![systemdesign](./images/system_design.png)
 
-## 6. Implementation Details
+## 7. Implementation Details
 
 The Flask application utilizes various functionalities:
 
@@ -87,13 +87,13 @@ The Flask application utilizes various functionalities:
   recommendations.
 - `initialize_conv_reco()`: Initializes the recommendations conversation.
 
-### Prerequisites
+  ### Prerequisites
 
 - Python 3.7+
 - Please ensure that you add your OpenAI API key to the empty text file named "OpenAI_API_Key" in order to access the
   OpenAI API.
 
-### Getting Started
+## 8. Getting Started
 
 To begin utilizing ShopAssist AI, please proceed with the following instructions.
 
@@ -118,13 +118,10 @@ To begin utilizing ShopAssist AI, please proceed with the following instructions
     $ python3 app.py
     ```
 
-## 7. Appendix - B
+## 9. Screenshots
 
 User output example screenshot:
 
-![Screenshot1](images/1_ShopAssistChat.png)
+![Screenshot1](images/1-image.png)
 
-![Screenshot2](images/2_ShopAssistChat.png)
-
-![Screenshot3](images/3_ShopAssistChat.png)
 
