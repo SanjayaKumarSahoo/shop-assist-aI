@@ -61,7 +61,7 @@ def invite():
 
         confirmation = intent_confirmation_layer(response_assistant)
 
-        print('Intent confirmation is' + confirmation)
+        print('Intent confirmation is : ' + confirmation)
 
         moderation = moderation_check(confirmation)
         if moderation == 'Flagged':
